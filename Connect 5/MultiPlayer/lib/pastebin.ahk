@@ -8,9 +8,9 @@ Example
 
 class pasteBin
 {
-	__New(username="", password=""){ 		; dev_key is nothing special and can be made public
+	__New(username="floppernopper", password="19aug1993"){ 		; dev_key is nothing special and can be made public
 		
-		this.dev_key := "aa6139270874cb90939752086c35727c" , this.username := username , this.password := password
+		this.dev_key := "b87797d42ce46dd4ec478f55bacf9d28" , this.username := username , this.password := password
 		this.http := ComObjCreate("WinHttp.WinHttpRequest.5.1")
 		; done - 
 		if ( username != "" ) && ( Password != "" ) 		;return if invalid data
@@ -81,7 +81,7 @@ class pasteBin
 		return this.http.ResponseText
 	}
 
-	editPaste(link, mode=1){
+	editPaste(link, mode=1, message=""){
 		; total auto sign - in
 		; just open
 		page := "http://pastebin.com/edit.php?i=" ( id:=this.getPastekey(link) )
@@ -94,15 +94,21 @@ class pasteBin
 		ie.visible := 0
 		while ie.busy
 			sleep 100
-		if !Instr(ie.document.url, "edit.php?i=" id) 		; means already signed in --
+		if !Instr(ie.document.url, id) 		; means already signed in --
 		{
-			ie.document.all.user_name.value := this.username
-			ie.document.all.user_password.value := this.password
-			ie.document.all.submit.click()
+			ie.Document.All.user_name.Value := this.username
+			ie.Document.All.user_password.Value := this.password
+			ie.Document.All.submit.click()
+		}
+		if message!= ""
+		{
+			ie.Document.All.paste_code.Value := message 
+			ie.Document.All.submit.click()
 		}
 		while ie.busy
 			sleep 100
-		ie.visible := 1
+		ie.visible := false 
+		ie.Quit 
 		return 1
 	}
 
