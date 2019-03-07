@@ -13,7 +13,7 @@ CoordMode, Mouse, Client
 ;pbin.editPaste("8gX2u7Ra", 1, "3rd paste!")
 
 pbin := new pastebin()
-pbin.editPaste("8gX2u7Ra", 1, "NEWGAME")
+;pbin.editPaste("8gX2u7Ra", 1, "NEWGAME")
 ;----------------------------------- GLOBAL VARS -------------------------------------------------------------------------------------------------------------
 board := [["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""]]
 
@@ -25,7 +25,7 @@ startread := pbin.getPasteData("https://pastebin.com/8gX2u7Ra")
 
 if (startread="NEWGAME")
 {
-	turn := "opponent"
+	turn := "player"
 	playerpiece := "X"
 	opponentpiece := "O"
 	MsgBox, You are X's
@@ -33,10 +33,17 @@ if (startread="NEWGAME")
 else 
 {
 	pbin.editPaste("8gX2u7Ra", 1, "NEWGAME")
+	playermove := "NEWGAME"
 	turn := "opponent"
 	playerpiece := "O"
 	opponentpiece := "X"
 	MsgBox, You are O's
+
+		;Gui, +resize 
+	Gui, Font, s30, Arial
+	BuildButtonGrid(0,0,100,100,10,10)
+	Gui, Add, Text, x50 y1010 w1000 h40 vPlayerTurn, Player X turn 
+	Gui, Show, w1000 h1050, Connect 5
 
 	Loop ;check to see if opponent has moved 
 	{
@@ -46,7 +53,7 @@ else
 		else if (opponentmove = "GAMEOVER")
 		{
 			MsgBox, %opponentpiece% wins!
-			reload 
+			return 
 		}
 		else if (playermove != opponentmove)
 			break 
@@ -79,6 +86,8 @@ else
 	sleep 100
 	GuiControl,,Playerturn, Player %playerpiece% turn 
 	turn := "player"
+
+	return 
 
 }
 

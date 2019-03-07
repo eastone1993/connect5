@@ -100,6 +100,7 @@ class pasteBin
 			ie.Document.All.user_password.Value := this.password
 			ie.Document.All.submit.click()
 		}
+		sleep 500
 		if message!= ""
 		{
 			ie.Document.All.paste_code.Value := message 
@@ -107,8 +108,8 @@ class pasteBin
 		}
 		while ie.busy
 			sleep 100
-		ie.visible := false
-		;ie.Quit 
+		ie.visible := 0
+		ie.Quit 
 		return 1
 	}
 
