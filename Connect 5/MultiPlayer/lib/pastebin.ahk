@@ -107,7 +107,7 @@ class pasteBin
 		}
 		while ie.busy
 			sleep 100
-		ie.visible := false 
+		ie.visible := 1
 		ie.Quit 
 		return 1
 	}

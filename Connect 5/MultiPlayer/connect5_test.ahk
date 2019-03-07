@@ -8,25 +8,29 @@
 CoordMode, Mouse, Client
 
 ;----------------------------------- INTERNET CONNECTION -------------------------------------------------------------------------------------------------------------
-pbin := new pastebin()
-;msgbox % Clipboard := pbin.pasteAsGuest("Evan's first paste with AHK", "paste_name", "autohotkey")
+;PASTE BIN LINK: https://pastebin.com/8gX2u7Ra
+;pbin.getPasteData("https://pastebin.com/8gX2u7Ra")
 ;pbin.editPaste("8gX2u7Ra", 1, "3rd paste!")
-;sleep 3000
-;msgbox % Clipboard := pbin.paste("This is my second paste!", "First Paste")
-;msgbox % Clipboard := pbin.getPasteData("https://pastebin.com/8gX2u7Ra")
 
-/*
-ie := ComObjCreate("InternetExplorer.Application")
-ie.Visible := true 
-ie.Navigate("https://shrib.com/1_55nDiq5sKG6glD_NSk")
-;ie.document.getelementbyid("igob").value 
-*/
+pbin := new pastebin()
 
 ;----------------------------------- GLOBAL VARS -------------------------------------------------------------------------------------------------------------
-turn := "player"
-playerpiece := "X"
-opponentpiece := "O"
 board := [["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""]]
+
+;define turn var, playerpiece var, opponentpiece var 
+startread := pbin.getPasteData("https://pastebin.com/8gX2u7Ra")
+if (startread="GAMEOVER")
+{
+	turn := "player"
+	playerpiece := "X"
+	opponentpiece := "O"
+}
+else if(startread="NEWGAME")
+{
+	turn := "opponent"
+	playerpiece := "O"
+	opponentpiece := "X"
+}
 
 ;----------------------------------- GUI SETTINGS -------------------------------------------------------------------------------------------------------------
 ;Gui, +resize 
@@ -49,8 +53,7 @@ ExitApp
 return  
 
 ^q::
-MsgBox % Con := ControlsAtPos("Connect 5", 51, 51)
-GuiControl,,%con%, "Derp "
+pbin.editPaste("8gX2u7Ra", 1, "10.10")
 return 
 ;----------------------------------- RELOAD -------------------------------------------------------------------------------------------------------------
 ^r::
@@ -95,8 +98,8 @@ if (turn = "player") ; X player's turn
 	ControlSetText, %ControlUnder%, %playerpiece% 
 	;MsgBox, %ypos% : %xpos%
 	board[ypos][xpos] := playerpiece
-	playermove := ypos . "." . xpos 
-	
+	 
+	playermove := ypos . "." . xpos
 
 	;left right check 
 	if (board[ypos][xpos] = board[ypos][xpos-1]) or (board[ypos][xpos] = board[ypos][xpos+1])
@@ -109,6 +112,7 @@ if (turn = "player") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, %turn% Wins!
+				pbin.editPaste("8gX2u7Ra", 1, "GAMEOVER")
 			 	reload 
 			}
 			if (board[ypos][xpos] = board[ypos][xpos-1])
@@ -157,6 +161,7 @@ if (turn = "player") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, %turn% Wins!
+				pbin.editPaste("8gX2u7Ra", 1, "GAMEOVER")
 			 	reload 
 			}
 			if (board[ypos][xpos] = board[ypos-1][xpos])
@@ -205,6 +210,7 @@ if (turn = "player") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, %turn% Wins!
+				pbin.editPaste("8gX2u7Ra", 1, "GAMEOVER")
 			 	reload 
 			}
 			if (board[ypos][xpos] = board[ypos-1][xpos-1])
@@ -255,6 +261,7 @@ if (turn = "player") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, %turn% Wins!
+				pbin.editPaste("8gX2u7Ra", 1, "GAMEOVER")
 			 	reload 
 			}
 			if (board[ypos][xpos] = board[ypos+1][xpos-1])
@@ -293,54 +300,58 @@ if (turn = "player") ; X player's turn
 			}
 		}
 	}
+	  
 	pbin.editPaste("8gX2u7Ra", 1, playermove)
 	GuiControl,,PlayerTurn, Player %opponentpiece% turn
-	turn := "Opponent"
+	turn := "opponent"
 
 ;----------------------------------- Opponent Check -------------------------------------------------------------------------------------------------------------
 	sleep 5000
 
-	Loop 
+	Loop ;check to see if opponent has moved 
 	{
-		sleep 2000
 		opponentmove := pbin.getPasteData("https://pastebin.com/8gX2u7Ra")
 		if (playermove = opponentmove)
 			continue
+		else if (opponentmove = "GAMEOVER")
+		{
+			MsgBox, %opponentpiece% wins!
+			reload 
+		}
 		else if (playermove != opponentmove)
 			break 
+		sleep 5000
 	}
 
-	;MsgBox % opponentmove 
-	movearray := StrSplit(%opponentmove%,.)
-	fx := movearray[2]
-	fy := movearray[1]
-	MsgBox, y:%fy% x:%fx%
+	Loop, Parse, opponentmove, . ;interprets opponent move 
+	{
+		if A_Index=1
+		{
+			fy := A_LoopField 
+			;MsgBox % fy
+		}
+		if A_Index=2
+		{
+			fx := A_LoopField 
+			;MsgBox % fx 
+		}
+	}
+	;MsgBox, y:%fy% x:%fx%
 
+	board[fy][fx] := opponentpiece ;places opponent move on board 
+
+	fyprime := BuildCoord(fy) ;converts opponent move to button location
+	fxprime := BuildCoord(fx)
+
+	con := ControlsAtPos("Connect 5", fxprime, fyprime) ;finds button at location 
+	GuiControl,,%con%, %opponentpiece%  ;places opponent's piece at button location 
+
+	sleep 100
+
+	turn := "player"
 }
 
 	
-;----------------------------------- O TURN  -------------------------------------------------------------------------------------------------------------
-/*
-else if (turn = "Opponent")
-{
-	
-;	if (board[ypos][xpos] = "X")
-;		return 
-;	if (board[ypos][xpos] = "O")
-;		return
-	
-	;MsgBox, %ypos% : %xpos%
-	board[ypos][xpos] := "O"
-	playermove := ypos . "." . xpos 
-
-	;left right check 
-	
-
-	GuiControl,,PlayerTurn, Player %playerpiece% turn
-	turn := "Player"
-
-}	
-*/	
 return 
 
 ;----------------------------------- FUNCTIONS -------------------------------------------------------------------------------------------------------------
@@ -351,6 +362,11 @@ FindCoord(ByRef x) {
 	if (xsum > 0)
 		xcoord := xcoord +1
 	return xcoord
+}
+
+BuildCoord(ByRef x) {
+	xnew := (x*100)-50
+	return xnew
 }
 
 BuildButtonGrid(ByRef x, ByRef y, ByRef w, ByRef h, ByRef num_columns, ByRef num_rows) {
