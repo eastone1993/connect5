@@ -19,6 +19,10 @@ board := [["","","","","","","","","",""],["","","","","","","","","",""],["",""
 
 ;define turn var, playerpiece var, opponentpiece var 
 startread := pbin.getPasteData("https://pastebin.com/8gX2u7Ra")
+turn := "player"
+playerpiece := "X"
+opponentpiece := "O"
+/*
 if (startread="GAMEOVER")
 {
 	turn := "player"
@@ -31,7 +35,7 @@ else if(startread="NEWGAME")
 	playerpiece := "O"
 	opponentpiece := "X"
 }
-
+*/
 ;----------------------------------- GUI SETTINGS -------------------------------------------------------------------------------------------------------------
 ;Gui, +resize 
 Gui, Font, s30, Arial
@@ -44,16 +48,43 @@ return
 ;----------------------------------- GUI CLOSE -------------------------------------------------------------------------------------------------------------
 GuiClose:
 pbin.Quit
+Loop 
+{
+	Process, Exist, iexplore.exe
+	if(!errorlevel)
+	{
+		Process, Close, iexplore.exe
+		continue
+	}
+	if(errorLevel)
+	{
+		break 
+	}	
+}
 ExitApp
 return 
 
 Esc::
 pbin.Quit
+Loop 
+{
+	Process, Exist, iexplore.exe
+	if(!errorlevel)
+	{
+		Process, Close, iexplore.exe
+		continue
+	}
+	if(errorLevel)
+	{
+		break 
+	}	
+}
 ExitApp 
 return  
 
 ^q::
-pbin.editPaste("8gX2u7Ra", 1, "10.10")
+InputBox, output, 
+pbin.editPaste("8gX2u7Ra", 1, output)
 return 
 ;----------------------------------- RELOAD -------------------------------------------------------------------------------------------------------------
 ^r::
@@ -320,7 +351,7 @@ if (turn = "player") ; X player's turn
 		}
 		else if (playermove != opponentmove)
 			break 
-		sleep 5000
+		sleep 2000
 	}
 
 	Loop, Parse, opponentmove, . ;interprets opponent move 
@@ -347,7 +378,7 @@ if (turn = "player") ; X player's turn
 	GuiControl,,%con%, %opponentpiece%  ;places opponent's piece at button location 
 
 	sleep 100
-
+	GuiControl,,Playerturn, Player %playerpiece% turn 
 	turn := "player"
 }
 
