@@ -34,8 +34,8 @@ else
 {
 	pbin.editPaste("8gX2u7Ra", 1, "NEWGAME")
 	turn := "opponent"
-	playerpiece := "X"
-	opponentpiece := "O"
+	playerpiece := "O"
+	opponentpiece := "X"
 	MsgBox, You are O's
 
 	Loop ;check to see if opponent has moved 
