@@ -94,13 +94,14 @@ class pasteBin
 		ie.visible := 0
 		while ie.busy
 			sleep 100
+		sleep 1000
 		if !Instr(ie.document.url, id) 		; means already signed in --
 		{
 			ie.Document.All.user_name.Value := this.username
 			ie.Document.All.user_password.Value := this.password
 			ie.Document.All.submit.click()
 		}
-		sleep 500
+		sleep 1000
 		if message!= ""
 		{
 			ie.Document.All.paste_code.Value := message 
@@ -109,6 +110,12 @@ class pasteBin
 		while ie.busy
 			sleep 100
 		ie.visible := 0
+		sleep 100
+		While ( value <> "Log Out" )
+			value := ie.document.getElementsByTagName( "li")[ A_Index - 1].innertext, index := A_Index - 1
+		ie.document.getElementsByTagName( "li")[ index].Click()
+		while ie.busy
+			sleep 100
 		ie.Quit 
 		return 1
 	}
