@@ -25,6 +25,11 @@ Class shrib
 		this.ie.execWB(17,0)
 		this.ie.execWB(12,0)
 		this.output := Clipboard
+		;this.ie.refresh
+		this.ie.quit
+		this.ie := ""
+		VarSetCapacity(this.ie, 0)
+		this.closeWin()
 		return this.output 
 	}
 	
@@ -45,5 +50,25 @@ Class shrib
 		this.ie.execWB(13,0)
 		;sleep 500
 		;ControlSend, Internet Explorer_Server1, %message%, ahk_class IEFrame
+		;this.ie.refresh
+		this.ie.quit
+		this.ie := ""
+		VarSetCapacity(this.ie, 0)
+		this.closeWin()
+	}
+
+	closeWin() {
+		WinWait, ahk_class #32770, &Leave this page, 5
+		if ErrorLevel 
+		{
+			return 
+		}
+		else 
+		{
+			;MsgBox, window found!
+			;WinClose, ahk_class #32770
+			ControlSend,, {enter}, ahk_class #32770, &Leave this page
+		}
+		return 
 	}
 }
