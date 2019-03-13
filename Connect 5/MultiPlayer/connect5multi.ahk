@@ -13,12 +13,10 @@ DetectHiddenText, On
 
 sbin := new shrib()
 ;sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "derp")
-
 ;sleep 2000
 ;MsgBox % sbin.getShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC")
 
-;pbin := new pastebin()
-;pbin.editPaste("8gX2u7Ra", 1, "NEWGAME")
+
 ;----------------------------------- INITIAL START UP -------------------------------------------------------------------------------------------------------------
 board := [["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""]]
 
@@ -135,7 +133,7 @@ Reload
 return 
 
 ;----------------------------------- DEBUG -------------------------------------------------------------------------------------------------------------
-^+t::
+^+t:: ;for debugging 
 For index, array in board 
 {
 	by := A_Index
@@ -186,7 +184,7 @@ if (turn = "player") ; X player's turn
 		{
 			if (wincount = 5)
 			{
-				MsgBox, %turn% Wins!
+				MsgBox, You Win!
 				sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "GAMEOVER")
 			 	return  
 			}
@@ -208,7 +206,7 @@ if (turn = "player") ; X player's turn
 		{
 			if (wincount = 5)
 			{
-				MsgBox, %turn% Wins!
+				MsgBox, You Win!
 			 	return 
 			}
 			if (board[ypos][xpos] = board[ypos][xpos+1])
@@ -235,7 +233,7 @@ if (turn = "player") ; X player's turn
 		{
 			if (wincount = 5)
 			{
-				MsgBox, %turn% Wins!
+				MsgBox, You Win!
 				sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "GAMEOVER")
 			 	return  
 			}
@@ -257,7 +255,7 @@ if (turn = "player") ; X player's turn
 		{
 			if (wincount = 5)
 			{
-				MsgBox, %turn% Wins!
+				MsgBox, You Win!
 			 	return  
 			}
 			if (board[ypos][xpos] = board[ypos+1][xpos])
@@ -284,7 +282,7 @@ if (turn = "player") ; X player's turn
 		{
 			if (wincount = 5)
 			{
-				MsgBox, %turn% Wins!
+				MsgBox, You Win!
 				sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "GAMEOVER")
 			 	return 
 			}
@@ -307,7 +305,7 @@ if (turn = "player") ; X player's turn
 		{
 			if (wincount = 5)
 			{
-				MsgBox, %turn% Wins!
+				MsgBox, You Win!
 			 	return  
 			}
 			if (board[ypos][xpos] = board[ypos+1][xpos+1])
@@ -335,7 +333,7 @@ if (turn = "player") ; X player's turn
 		{
 			if (wincount = 5)
 			{
-				MsgBox, %turn% Wins!
+				MsgBox, You Win!
 				sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "GAMEOVER")
 			 	return 
 			}
@@ -358,7 +356,7 @@ if (turn = "player") ; X player's turn
 		{
 			if (wincount = 5)
 			{
-				MsgBox, %turn% Wins!
+				MsgBox, You Win!
 			 	return  
 			}
 			if (board[ypos][xpos] = board[ypos-1][xpos+1])
