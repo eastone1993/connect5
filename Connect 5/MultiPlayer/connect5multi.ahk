@@ -2,35 +2,138 @@
 #NoTrayIcon 
 #SingleInstance, force 
 #include %A_ScriptDir%\lib\GUILibrary.ahk 
+#include %A_ScriptDir%\lib\shriblib.ahk
 
 ;----------------------------------- COORD SETTINGS -------------------------------------------------------------------------------------------------------------
 CoordMode, Mouse, Client
+DetectHiddenWindows, On
+DetectHiddenText, On 
+;----------------------------------- INTERNET CONNECTION -------------------------------------------------------------------------------------------------------------
+;SHRIB link: https://shrib.com/#N6WHkXcPNHvbrnL1UDhC
 
-;----------------------------------- GLOBAL VARS -------------------------------------------------------------------------------------------------------------
-turn := "x"
+sbin := new shrib()
+;sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "derp")
+
+;sleep 2000
+;MsgBox % sbin.getShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC")
+
+;pbin := new pastebin()
+;pbin.editPaste("8gX2u7Ra", 1, "NEWGAME")
+;----------------------------------- INITIAL START UP -------------------------------------------------------------------------------------------------------------
 board := [["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""],["","","","","","","","","",""]]
-map := [[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0]]
+
+;define turn var, playerpiece var, opponentpiece var 
+;turn := "player"
+;playerpiece := "X"
+;opponentpiece := "O"
+
+
+
+;startread variable determines player type 
+startread := sbin.getShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC")
+
+if (startread="NEWGAME")
+{
+	turn := "player"
+	playerpiece := "X"
+	opponentpiece := "O"
+	MsgBox, You are X's
+}
+
+else 
+{
+	sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "NEWGAME")
+	playermove := "NEWGAME"
+	turn := "opponent"
+	playerpiece := "O"
+	opponentpiece := "X"
+	MsgBox, You are O's
+
+		;Gui, +resize 
+	Gui, Font, s30, Arial
+	BuildButtonGrid(0,0,100,100,10,10)
+	Gui, Add, Text, x50 y1010 w1000 h40 vPlayerTurn, Player X turn 
+	Gui, Show, w1000 h1050, Connect 5
+
+	Loop ;check to see if opponent has moved 
+	{
+		opponentmove := sbin.getShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC")
+		if (playermove = opponentmove)
+			continue
+		else if (opponentmove = "GAMEOVER")
+		{
+			MsgBox, %opponentpiece% wins!
+			return 
+		}
+		else if (playermove != opponentmove)
+			break 
+		sleep 2000
+	}
+
+	Loop, Parse, opponentmove, . ;interprets opponent move 
+	{
+		if A_Index=1
+		{
+			fy := A_LoopField 
+			;MsgBox % fy
+		}
+		if A_Index=2
+		{
+			fx := A_LoopField 
+			;MsgBox % fx 
+		}
+	}
+	;MsgBox, y:%fy% x:%fx%
+
+	board[fy][fx] := opponentpiece ;places opponent move on board 
+
+	fyprime := BuildCoord(fy) ;converts opponent move to button location
+	fxprime := BuildCoord(fx)
+
+	con := ControlsAtPos("Connect 5", fxprime, fyprime) ;finds button at location 
+	GuiControl,,%con%, %opponentpiece%  ;places opponent's piece at button location 
+
+	sleep 100
+	GuiControl,,Playerturn, Player %playerpiece% turn 
+	turn := "player"
+
+	return 
+
+}
 
 ;----------------------------------- GUI SETTINGS -------------------------------------------------------------------------------------------------------------
-
 ;Gui, +resize 
 Gui, Font, s30, Arial
 BuildButtonGrid(0,0,100,100,10,10)
 Gui, Add, Text, x50 y1010 w1000 h40 vPlayerTurn, Player X turn 
 Gui, Show, w1000 h1050, Connect 5
 
+
+
 return 
 
 ;----------------------------------- GUI CLOSE -------------------------------------------------------------------------------------------------------------
 GuiClose:
-ExitApp 
+Process, Close, iexplore.exe 
+Process, Close, ielowutil.exe
+ExitApp
+return 
 
 Esc::
+Process, Close, iexplore.exe 
+Process, Close, ielowutil.exe
 ExitApp 
+return  
+
+^q::
+InputBox, output, 
+sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", output)
+return 
 ;----------------------------------- RELOAD -------------------------------------------------------------------------------------------------------------
 ^r::
 Reload 
 return 
+
 ;----------------------------------- DEBUG -------------------------------------------------------------------------------------------------------------
 ^+t::
 For index, array in board 
@@ -58,7 +161,7 @@ ypos := FindCoord(UnderY) ;converts y position of mouse to grid position
 ;MsgBox (%xpos%,%ypos%)
 
 ;----------------------------------- X TURN -------------------------------------------------------------------------------------------------------------
-if (turn = "X") ; X player's turn 
+if (turn = "player") ; X player's turn 
 {
 	/*
 	if (board[ypos][xpos] = "X") ;checks to see if space is already taken 
@@ -66,9 +169,12 @@ if (turn = "X") ; X player's turn
 	if (board[ypos][xpos] = "O") ;checks to see if space is already taken 
 		return
 	*/
-	ControlSetText, %ControlUnder%, X 
+	turn := "opponent"
+	ControlSetText, %ControlUnder%, %playerpiece% 
 	;MsgBox, %ypos% : %xpos%
-	board[ypos][xpos] := "X"
+	board[ypos][xpos] := playerpiece
+	 
+	playermove := ypos . "." . xpos
 
 	;left right check 
 	if (board[ypos][xpos] = board[ypos][xpos-1]) or (board[ypos][xpos] = board[ypos][xpos+1])
@@ -81,7 +187,8 @@ if (turn = "X") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, %turn% Wins!
-			 	reload 
+				sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "GAMEOVER")
+			 	return  
 			}
 			if (board[ypos][xpos] = board[ypos][xpos-1])
 			{
@@ -102,7 +209,7 @@ if (turn = "X") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, %turn% Wins!
-			 	reload 
+			 	return 
 			}
 			if (board[ypos][xpos] = board[ypos][xpos+1])
 			{
@@ -129,7 +236,8 @@ if (turn = "X") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, %turn% Wins!
-			 	reload 
+				sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "GAMEOVER")
+			 	return  
 			}
 			if (board[ypos][xpos] = board[ypos-1][xpos])
 			{
@@ -150,7 +258,7 @@ if (turn = "X") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, %turn% Wins!
-			 	reload 
+			 	return  
 			}
 			if (board[ypos][xpos] = board[ypos+1][xpos])
 			{
@@ -177,7 +285,8 @@ if (turn = "X") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, %turn% Wins!
-			 	reload 
+				sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "GAMEOVER")
+			 	return 
 			}
 			if (board[ypos][xpos] = board[ypos-1][xpos-1])
 			{
@@ -199,7 +308,7 @@ if (turn = "X") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, %turn% Wins!
-			 	reload 
+			 	return  
 			}
 			if (board[ypos][xpos] = board[ypos+1][xpos+1])
 			{
@@ -227,7 +336,8 @@ if (turn = "X") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, %turn% Wins!
-			 	reload 
+				sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "GAMEOVER")
+			 	return 
 			}
 			if (board[ypos][xpos] = board[ypos+1][xpos-1])
 			{
@@ -249,7 +359,7 @@ if (turn = "X") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, %turn% Wins!
-			 	reload 
+			 	return  
 			}
 			if (board[ypos][xpos] = board[ypos-1][xpos+1])
 			{
@@ -265,90 +375,58 @@ if (turn = "X") ; X player's turn
 			}
 		}
 	}
-	;MsgBox, hmm
-	GuiControl,,PlayerTurn, Player O turn
-	;MsgBox, duh
-	turn := "O"
-
-;----------------------------------- AI Turn -------------------------------------------------------------------------------------------------------------
-/*
-	Loop
-	{
-		Random, randy, 1, 10
-		Random, randx, 1, 10
-		if (board[randy][randx]="")
-		{
-			board[randy][randx] := "O"
-			ny := BuildCoord(randy), nx := BuildCoord(randx), con := ControlsAtPos("Connect 5", ny, nx)
-			GuiControl,,%con%, O
-			break 
-		}
-	}
-	*/
-
-	for index, array in board 
-	{
-		ymap := A_Index 
-
-		for index, elem in array 
-		{
-			xmap := A_Index 
-			if (board[ymap][xmap]="x")
-			{
-				map[ymap-1][xmap] := map[ymap-1][xmap]+1 ;upper block 
-				map[ymap+1][xmap] := map[ymap+1][xmap]+1 ;lower block
-				map[ymap-1][xmap-1] := map[ymap-1][xmap-1]+1 ;upper left 
-				map[ymap-1][xmap+1] := map[ymap-1][xmap+1]+1 ;upper right 
-				map[ymap][xmap+1] := map[ymap][xmap+1]+1 ;right block 
-				map[ymap][xmap-1] := map[ymap][xmap-1]+1 ;left block 
-				map[ymap+1][xmap-1] := map[ymap+1][xmap-1]+1 ;lower left 
-				map[ymap+1][xmap+1] := map[ymap+1][xmap+1]+1 ;lower right 
-			}
-		}
-	}
-
-	max := 0
-
-	for index, array in board 
-	{
-		ymap := A_Index 
-
-		for index, elem in array 
-		{
-			xmap := A_Index 
-			if (board[ymap][xmap]="X") or (board[ymap][xmap]="O")
-			{
-				map[ymap][xmap] := 0
-				continue 
-			}
-			if(map[ymap][xmap]>max)
-			{
-				if (board[ymap][xmap]="X") or (board[ymap][xmap]="O")
-				{
-					map[ymap][xmap] := 0
-					continue 
-				}
-
-				ymax := ymap 
-				xmax := xmap 
-				max := map[ymap][xmap]
-			}	
-			map[ymap][xmap] := 0		
-		}
-	}
-
+	  
+	sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", playermove)
+	GuiControl,,PlayerTurn, Player %opponentpiece% turn
 	
-	if (map[ymax][xmax]=0)
-		MsgBox % max
-	board[ymax][xmax] := "O"
-	ny := BuildCoord(ymax), nx := BuildCoord(xmax), con := ControlsAtPos("Connect 5", ny, nx)
-	GuiControl,,%con%, O
-	GuiControl,,PlayerTurn, Player X turn
-	max := 0
-	turn := "X"
+
+;----------------------------------- Opponent Check -------------------------------------------------------------------------------------------------------------
+	sleep 5000
+
+	Loop ;check to see if opponent has moved 
+	{
+		opponentmove := sbin.getShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC")
+		if (playermove = opponentmove)
+			continue
+		else if (opponentmove = "GAMEOVER")
+		{
+			MsgBox, %opponentpiece% wins!
+			reload 
+		}
+		else if (playermove != opponentmove)
+			break 
+		sleep 2000
+	}
+
+	Loop, Parse, opponentmove, . ;interprets opponent move 
+	{
+		if A_Index=1
+		{
+			fy := A_LoopField 
+			;MsgBox % fy
+		}
+		if A_Index=2
+		{
+			fx := A_LoopField 
+			;MsgBox % fx 
+		}
+	}
+	;MsgBox, y:%fy% x:%fx%
+
+	board[fy][fx] := opponentpiece ;places opponent move on board 
+
+	fyprime := BuildCoord(fy) ;converts opponent move to button location
+	fxprime := BuildCoord(fx)
+
+	con := ControlsAtPos("Connect 5", fxprime, fyprime) ;finds button at location 
+	GuiControl,,%con%, %opponentpiece%  ;places opponent's piece at button location 
+
+	sleep 100
+	GuiControl,,Playerturn, Player %playerpiece% turn 
+	turn := "player"
 }
 
-
+	
 return 
 
 ;----------------------------------- FUNCTIONS -------------------------------------------------------------------------------------------------------------
@@ -359,6 +437,11 @@ FindCoord(ByRef x) {
 	if (xsum > 0)
 		xcoord := xcoord +1
 	return xcoord
+}
+
+BuildCoord(ByRef x) {
+	xnew := (x*100)-50
+	return xnew
 }
 
 BuildButtonGrid(ByRef x, ByRef y, ByRef w, ByRef h, ByRef num_columns, ByRef num_rows) {
@@ -397,13 +480,6 @@ BuildButtonGrid(ByRef x, ByRef y, ByRef w, ByRef h, ByRef num_columns, ByRef num
 	}
 }
 
-
-BuildCoord(ByRef x) {
-	xnew := (x*100)-50
-	return xnew
-}
-
-
 ControlsAtPos(WinTitle, fx, fy) {
 	WinGet, list, ControlListHwnd, %WinTitle%
 	loop, parse, list, `n
@@ -416,3 +492,6 @@ ControlsAtPos(WinTitle, fx, fy) {
 	}
 	return SubStr(ret, 2)
 }
+
+
+
