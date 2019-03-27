@@ -2,20 +2,23 @@
 pbin := new shrib()
 MsgBox % getShribData("link")
 */
+
+;https://shrib.com/#N6WHkXcPNHvbrnL1UDhC
+
 DetectHiddenWindows, On
 DetectHiddenText, On 
 Class shrib 
 {
 	__New() {
 		this.ie := ComObjCreate("InternetExplorer.Application")
-		this.ie.visible := 0
+		this.ie.visible := 1
 	}
 
 	getShribData(link) {
 		if !IsObject(this.ie)
 		{
 			this.ie := ComObjCreate("InternetExplorer.Application")
-			this.ie.visible := 0
+			this.ie.visible := 1
 		}
 		this.ie.navigate(link)
 		while this.ie.busy 
@@ -26,10 +29,10 @@ Class shrib
 		this.ie.execWB(12,0)
 		this.output := Clipboard
 		;this.ie.refresh
-		this.ie.quit
-		this.ie := ""
-		VarSetCapacity(this.ie, 0)
-		this.closeWin()
+		;this.ie.quit
+		;this.ie := ""
+		;VarSetCapacity(this.ie, 0)
+		;this.closeWin()
 		return this.output 
 	}
 	
@@ -37,7 +40,7 @@ Class shrib
 		if !IsObject(this.ie)
 		{
 			this.ie := ComObjCreate("InternetExplorer.Application")
-			this.ie.visible := 0
+			this.ie.visible := 1
 		}
 		this.ie.navigate(link)
 		while this.ie.busy 
@@ -51,10 +54,10 @@ Class shrib
 		;sleep 500
 		;ControlSend, Internet Explorer_Server1, %message%, ahk_class IEFrame
 		;this.ie.refresh
-		this.ie.quit
-		this.ie := ""
-		VarSetCapacity(this.ie, 0)
-		this.closeWin()
+		;this.ie.quit
+		;this.ie := ""
+		;VarSetCapacity(this.ie, 0)
+		;this.closeWin()
 	}
 
 	closeWin() {

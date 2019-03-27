@@ -9,13 +9,13 @@ CoordMode, Mouse, Client
 DetectHiddenWindows, On
 DetectHiddenText, On 
 ;----------------------------------- INTERNET CONNECTION -------------------------------------------------------------------------------------------------------------
-;SHRIB link: https://shrib.com/#N6WHkXcPNHvbrnL1UDhC
-;
+;SHRIB link: https://www.writeurl.com/text/x2w6k2ugxaa72plyedc9/r3vduemxpxgvf3w1eayv/8kt1oc66d6j25sr1qa8r
+;https://www.writeurl.com/text/x2w6k2ugxaa72plyedc9/r3vduemxpxgvf3w1eayv/8kt1oc66d6j25sr1qa8r
 
 sbin := new shrib()
-;sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "derp")
+;sbin.postShribData("https://www.writeurl.com/text/x2w6k2ugxaa72plyedc9/r3vduemxpxgvf3w1eayv/8kt1oc66d6j25sr1qa8r", "derp")
 ;sleep 2000
-;MsgBox % sbin.getShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC")
+;MsgBox % sbin.getShribData("https://www.writeurl.com/text/x2w6k2ugxaa72plyedc9/r3vduemxpxgvf3w1eayv/8kt1oc66d6j25sr1qa8r")
 
 
 ;----------------------------------- INITIAL START UP -------------------------------------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ board := [["","","","","","","","","",""],["","","","","","","","","",""],["",""
 
 
 ;startread variable determines player type 
-startread := sbin.getShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC")
+startread := sbin.getShribData("https://www.writeurl.com/text/x2w6k2ugxaa72plyedc9/r3vduemxpxgvf3w1eayv/8kt1oc66d6j25sr1qa8r")
 
 if (startread="NEWGAME")
 {
@@ -40,7 +40,7 @@ if (startread="NEWGAME")
 
 else 
 {
-	sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "NEWGAME")
+	sbin.postShribData("https://www.writeurl.com/text/x2w6k2ugxaa72plyedc9/r3vduemxpxgvf3w1eayv/8kt1oc66d6j25sr1qa8r", "NEWGAME")
 	playermove := "NEWGAME"
 	turn := "opponent"
 	playerpiece := "O"
@@ -55,7 +55,7 @@ else
 
 	Loop ;check to see if opponent has moved 
 	{
-		opponentmove := sbin.getShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC")
+		opponentmove := sbin.getShribData("https://www.writeurl.com/text/x2w6k2ugxaa72plyedc9/r3vduemxpxgvf3w1eayv/8kt1oc66d6j25sr1qa8r")
 		if (playermove = opponentmove)
 			continue
 		else if (opponentmove = "GAMEOVER")
@@ -125,7 +125,7 @@ return
 
 ^q::
 InputBox, output, 
-sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", output)
+sbin.postShribData("https://www.writeurl.com/text/x2w6k2ugxaa72plyedc9/r3vduemxpxgvf3w1eayv/8kt1oc66d6j25sr1qa8r", output)
 return 
 ;----------------------------------- RELOAD -------------------------------------------------------------------------------------------------------------
 ^r::
@@ -185,7 +185,7 @@ if (turn = "player") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, You Win!
-				sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "GAMEOVER")
+				sbin.postShribData("https://www.writeurl.com/text/x2w6k2ugxaa72plyedc9/r3vduemxpxgvf3w1eayv/8kt1oc66d6j25sr1qa8r", "GAMEOVER")
 			 	return  
 			}
 			if (board[ypos][xpos] = board[ypos][xpos-1])
@@ -234,7 +234,7 @@ if (turn = "player") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, You Win!
-				sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "GAMEOVER")
+				sbin.postShribData("https://www.writeurl.com/text/x2w6k2ugxaa72plyedc9/r3vduemxpxgvf3w1eayv/8kt1oc66d6j25sr1qa8r", "GAMEOVER")
 			 	return  
 			}
 			if (board[ypos][xpos] = board[ypos-1][xpos])
@@ -283,7 +283,7 @@ if (turn = "player") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, You Win!
-				sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "GAMEOVER")
+				sbin.postShribData("https://www.writeurl.com/text/x2w6k2ugxaa72plyedc9/r3vduemxpxgvf3w1eayv/8kt1oc66d6j25sr1qa8r", "GAMEOVER")
 			 	return 
 			}
 			if (board[ypos][xpos] = board[ypos-1][xpos-1])
@@ -334,7 +334,7 @@ if (turn = "player") ; X player's turn
 			if (wincount = 5)
 			{
 				MsgBox, You Win!
-				sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", "GAMEOVER")
+				sbin.postShribData("https://www.writeurl.com/text/x2w6k2ugxaa72plyedc9/r3vduemxpxgvf3w1eayv/8kt1oc66d6j25sr1qa8r", "GAMEOVER")
 			 	return 
 			}
 			if (board[ypos][xpos] = board[ypos+1][xpos-1])
@@ -374,7 +374,7 @@ if (turn = "player") ; X player's turn
 		}
 	}
 	  
-	sbin.postShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC", playermove)
+	sbin.postShribData("https://www.writeurl.com/text/x2w6k2ugxaa72plyedc9/r3vduemxpxgvf3w1eayv/8kt1oc66d6j25sr1qa8r", playermove)
 	GuiControl,,PlayerTurn, Player %opponentpiece% turn
 	
 
@@ -383,7 +383,7 @@ if (turn = "player") ; X player's turn
 
 	Loop ;check to see if opponent has moved 
 	{
-		opponentmove := sbin.getShribData("https://shrib.com/#N6WHkXcPNHvbrnL1UDhC")
+		opponentmove := sbin.getShribData("https://www.writeurl.com/text/x2w6k2ugxaa72plyedc9/r3vduemxpxgvf3w1eayv/8kt1oc66d6j25sr1qa8r")
 		if (playermove = opponentmove)
 			continue
 		else if (opponentmove = "GAMEOVER")
