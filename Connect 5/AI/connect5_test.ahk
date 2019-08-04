@@ -284,7 +284,7 @@ if (turn = "X") ; X player's turn
 			break 
 		}
 	}
-	*/
+*/
 
 	for index, array in board 
 	{

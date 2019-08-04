@@ -55,12 +55,12 @@ ypos := FindCoord(UnderY) ;converts y position of mouse to grid position
 ;----------------------------------- X TURN -------------------------------------------------------------------------------------------------------------
 if (turn = "X") ; X player's turn 
 {
-	/*
+/*
 	if (board[ypos][xpos] = "X") ;checks to see if space is already taken 
 		return 
 	if (board[ypos][xpos] = "O") ;checks to see if space is already taken 
 		return
-	*/
+*/
 	ControlSetText, %ControlUnder%, X 
 	;MsgBox, %ypos% : %xpos%
 	board[ypos][xpos] := "X"
